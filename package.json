@@ -1,7 +1,7 @@
 {
   "name": "excels-data",
   "version": "0.0.1",
-  "description": "",
+  "description": "A simple excel reader",
   "main": "dist/index.js",
   "scripts": {
     "build": "babel -d dist src",
@@ -14,7 +14,7 @@
   "keywords": [
     "excels-data"
   ],
-  "author": "'Thang <'thangtp@gmail.com'>",
+  "author": "'Thang Phuc Tran<'thangtp@gmail.com'>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/thangtp/excels-data/issues"

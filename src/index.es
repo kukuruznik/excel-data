@@ -4,19 +4,25 @@ import {toLowerAndNoSpaceStringsArray} from './utils/array'
 
 /**
 * return
-	{
-		sheetname1 (lowercase & no space): 
+	for every single sheet
+		{
+			sheetname1 (lowercase & no space): 
+			[
+				{column1 (lowercase & no space): value1, column2: value2, ...},
+				...
+			],
+			sheetname2: 
+			[
+				{column1 (lowercase & no space): value1, column2: value2, ...},
+				...
+			],
+			...
+		}
+	merging data from multiple sheet
 		[
 			{column1 (lowercase & no space): value1, column2: value2, ...},
 			...
-		],
-		sheetname2: 
-		[
-			{column1 (lowercase & no space): value1, column2: value2, ...},
-			...
-		],
-		...
-	}
+		]
  @opts
 		filter sheets
 			callback acceptsSheet(sheetName) to filter
