@@ -31,7 +31,10 @@ import {toLowerAndNoSpaceStringsArray} from './utils/array'
 				{header:2}
 		data in a range
 			{range: {s:{c:0, r:0}, e:{c:100, r:100}}}}
-*			{startRow: 1, endRow: 10}
+			{startRow: 1, endRow: 10}
+		merge data from all sheets (ex: by year)
+			{mergeData: true}
+*
 **/
 function readData(fileName, opts) {
 	opts = opts || {}
@@ -60,7 +63,10 @@ function readData(fileName, opts) {
 
 			data.splice(0, skipRows)
 
-			sheetToData[sheetNameLower] = data
+			if (opts.mergeData)
+				sheetToData = sheetToData.concat(data)
+			else
+				sheetToData[sheetNameLower] = data
 		}
 	})
 

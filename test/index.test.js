@@ -60,23 +60,50 @@ describe('excel reader', () => {
 			const header = readHeader(
 				'./test/test.xlsx', 
 				{
-					acceptsSheet: (sheetName) => sheetName === 'staffs',
+					acceptsSheet: (sheetName) => sheetName.indexOf('staffs') > -1,
 					atRow: 1,
-					hasMapping: true
+					hasMapping: true,
 				})
 
 			const data = readData(
 					'./test/test.xlsx', 
 					{
-						acceptsSheet: (sheetName) => sheetName === 'staffs',
+						acceptsSheet: (sheetName) => sheetName.indexOf('staffs') > -1,
 						header: header.columns,
 						skipRows: 4
-					})
+					})			
 
 			const staffs = data.staffs
 
-			expect(staffs[0].email).to.equal('john@gmail.com')
-			expect(staffs[0]['decimalvalue']).to.equal('3232')
+			expect(staffs.filter(i => i.email === 'john@gmail.com')).not.to.be.null
+			expect(staffs.filter(i => i.decimalvalue === '3232')).not.to.be.null
+		})
+
+		it('should merge data from 2 sheet', () => {			
+			const header = readHeader(
+				'./test/test.xlsx', 
+				{
+					acceptsSheet: (sheetName) => sheetName.indexOf('staffs') > -1,
+					atRow: 1,
+					hasMapping: true					
+				})
+
+			const data = readData(
+					'./test/test.xlsx', 
+					{
+						acceptsSheet: (sheetName) => sheetName.indexOf('staffs') > -1,
+						header: header.columns,
+						skipRows: 4,
+						mergeData: true
+					})			
+
+			//data in sheet#staffs
+			expect(data.filter(i => i.email === 'john@gmail.com')).not.to.be.null
+			expect(data.filter(i => i.decimalvalue === '3232')).not.to.be.null
+
+			//data in sheet#staffs_2015
+			expect(data.filter(i => i.email === 'bill@gmail.com')).not.to.be.null
+			expect(data.filter(i => i.hexvalue === '8A9B1')).not.to.be.null
 		})
 	})
 })
