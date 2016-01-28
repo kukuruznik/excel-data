@@ -5,39 +5,38 @@ describe('excel reader', () => {
 	describe('#readHeader', () => {
 		it('should have valid header', () => {			
 
-			const headerRows = readHeader(
+			const header = readHeader(
 				'./test/test.xlsx', 
 				{
 					acceptsSheet: (sheetName) => sheetName === 'staffs',
-					atRow: 1
+					atRow: 1,					
 				})
 
-			//return only one row
-			expect(headerRows.length).to.equal(1)
-
-			//return correct header columns
-			const headerColumns = headerRows[0]
-			expect(headerColumns).to.eql(['Name','Email','Age','Lowest Level','Highest Level','Decimal Value','Hex Value'])
+			expect(header.columns).to.eql(['Name','Email','Age','Lowest Level','Highest Level','Decimal Value','Hex Value'])
 		})
 
 		it('should have valid map header', () => {			
 
-			const headerRows = readHeader(
+			const header = readHeader(
 				'./test/test.xlsx', 
 				{
+					acceptsSheet: (sheetName) => sheetName === 'staffs',
 					atRow: 1,
 					hasMapping: true
 				})
 
-			//return 3 rows
-			expect(headerRows.length).to.equal(3)
+			expect(header.columns).to.eql(['Name','Email','Age','Lowest Level','Highest Level','Decimal Value','Hex Value'])
+			
+			//without mapping
+			expect(header.mapColumns['name']).not.to.equal('name')
+			expect(header.mapColumns['email']).not.to.equal('email')
+			expect(header.mapColumns['age']).not.to.equal('age')
 
-			//return correct header columns & map columns
-			const headerColumns = headerRows[0]
-			expect(headerColumns).to.eql(['Name','Email','Age','Lowest Level','Highest Level','Decimal Value','Hex Value'])
-
-			const mapColumns = headerRows[2]
-			expect(mapColumns).to.eql([, , ,'SalaryLevel','Salary Level','Decimal','Hex'])
+			//with mapping
+			expect(header.mapColumns['lowestlevel']).to.equal('salarylevel')
+			expect(header.mapColumns['highestlevel']).to.equal('salarylevel')
+			expect(header.mapColumns['decimalvalue']).to.equal('decimal')
+			expect(header.mapColumns['hexvalue']).to.equal('hex')
 		})
 	})
 
@@ -58,7 +57,7 @@ describe('excel reader', () => {
 		})
 
 		it('should have valid data', () => {			
-			const headerRows = readHeader(
+			const header = readHeader(
 				'./test/test.xlsx', 
 				{
 					acceptsSheet: (sheetName) => sheetName === 'staffs',
@@ -66,13 +65,11 @@ describe('excel reader', () => {
 					hasMapping: true
 				})
 
-			const columns = headerRows[0]
-
 			const data = readData(
 					'./test/test.xlsx', 
 					{
 						acceptsSheet: (sheetName) => sheetName === 'staffs',
-						header: columns,
+						header: header.columns,
 						skipRows: 4
 					})
 
