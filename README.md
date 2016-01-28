@@ -1,11 +1,10 @@
-var readHeader = require('excels-data').readHeader;
-var readData = require('excels-data').readData;
-
+```javascript
 // import {readHeader, readData} from 'excels-data'
+```
 
-/**
-* read header
-**/
+###### read header
+```javascript
+var readHeader = require('excels-data').readHeader;
 var header = readHeader(
 				'./test/test.xlsx', 
 				{
@@ -16,12 +15,12 @@ var header = readHeader(
 				
 console.log(header.columns);
 console.log(header.mapColumns['lowestlevel']);
+```
 
 
-
-/**
-* read data
-**/
+###### read data
+```javascript
+var readData = require('excels-data').readData;
 var header = readHeader(
 				'./test/test.xlsx', 
 				{
@@ -40,3 +39,4 @@ var data = readData(
 		
 		
 console.log(data.staffs[0].email)
+```
