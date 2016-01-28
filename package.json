@@ -1,5 +1,5 @@
 {
-  "name": "excels-data",
+  "name": "excel-data",
   "version": "0.0.1",
   "description": "A simple excel reader",
   "main": "dist/index.js",
@@ -9,17 +9,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/thangtp/excels-data.git"
+    "url": "https://github.com/thangtp/excel-data.git"
   },
   "keywords": [
-    "excels-data"
+    "excel-data"
   ],
   "author": "'Thang Phuc Tran<'thangtp@gmail.com'>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/thangtp/excels-data/issues"
+    "url": "https://github.com/thangtp/excel-data/issues"
   },
-  "homepage": "https://github.com/thangtp/excels-data",
+  "homepage": "https://github.com/thangtp/excel-data",
   "devDependencies": {
     "babel": "6.3.26",
     "babel-cli": "6.4.5",
