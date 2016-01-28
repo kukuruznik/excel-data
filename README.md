@@ -40,3 +40,30 @@ var data = readData(
 		
 console.log(data.staffs[0].email)
 ```
+
+###### read data from multiple sheets and merge
+```javascript
+var header = readHeader(
+				'./test/test.xlsx', 
+				{
+					acceptsSheet: (sheetName) => sheetName === 'staffs',
+					atRow: 1,
+					hasMapping: true
+				});
+
+var data = readData(
+		'./test/test.xlsx', 
+		{
+			acceptsSheet: (sheetName) => sheetName === 'staffs',
+			header: header.columns,
+			skipRows: 4,
+			mergeData: true
+		});
+		
+		
+//data in sheet#staffs
+console.log(data.filter(i => i.email === 'john@gmail.com'))
+
+//data in sheet#staffs_2015
+console.log(data.filter(i => i.email === 'bill@gmail.com'))
+```
