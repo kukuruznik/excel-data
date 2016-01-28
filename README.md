@@ -1,10 +1,14 @@
+# Installation
+npm install excel-data
+
+# Read Data
 ```javascript
 // import {readHeader, readData} from 'excels-data'
 var readHeader = require('excels-data').readHeader;
 var readData = require('excels-data').readData;
 ```
 
-###### read header
+##### Read header
 ```javascript
 var header = readHeader(
 				'./test/test.xlsx', 
@@ -19,7 +23,7 @@ console.log(header.mapColumns['lowestlevel']);
 ```
 
 
-###### read data
+##### Read data
 ```javascript
 var header = readHeader(
 				'./test/test.xlsx', 
@@ -41,7 +45,7 @@ var data = readData(
 console.log(data.staffs[0].email)
 ```
 
-###### read data from multiple sheets and merge
+##### Read data from multiple sheets and merge
 ```javascript
 var header = readHeader(
 				'./test/test.xlsx', 
