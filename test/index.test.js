@@ -1,5 +1,5 @@
 import {expect} from 'chai'
-import read from '../src/index'
+import {read} from '../src/index'
 
 describe('excel reader', () => {	
 	describe('#read', () => {

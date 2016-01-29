@@ -1,6 +1,5 @@
 import {expect} from 'chai'
-import read from '../src/index'
-import Lookup from '../src/lookup'
+import {read, Lookup} from '../src/index'
 
 describe('Lookup', () => {
 	

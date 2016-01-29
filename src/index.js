@@ -1,6 +1,7 @@
 import xlsx from 'xlsx'
 import {toLowerAndNoSpace} from './utils/strings'
 import {toLowerAndNoSpaceStringsArray} from './utils/array'
+import Lookup from './lookup'
 
 /**
 * return
@@ -203,4 +204,7 @@ function read(fileName, opts) {
 }
 
 
-module.exports = read
+module.exports = {
+	read,
+	Lookup
+}
