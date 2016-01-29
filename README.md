@@ -21,7 +21,7 @@ var data = readExcelData(
 const data = readExcelData(
 		'test.xlsx', 
 		{
-			acceptsSheet: function(sheetName) { return sheetName.indexOf('staffs') > -1; }
+			acceptsSheet: function(sheetName) { return sheetName.indexOf('staffs') > -1; },
 			hasMapping: true,
 			skipRows: 1
 		});
@@ -32,7 +32,7 @@ const data = readExcelData(
 const data = readExcelData(
 		'test.xlsx', 
 		{
-			acceptsSheet: function(sheetName) { return sheetName.indexOf('staffs') > -1; }
+			acceptsSheet: function(sheetName) { return sheetName.indexOf('staffs') > -1; },
 			hasMapping: true,
 			skipRows: 1,
 			mergeData: true
