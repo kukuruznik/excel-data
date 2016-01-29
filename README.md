@@ -1,5 +1,7 @@
 # Installation
+```javascript
 npm install excel-data
+```
 
 # Read Data
 ```javascript
