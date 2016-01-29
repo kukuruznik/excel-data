@@ -3,8 +3,8 @@ npm install excel-data
 
 # Read Data
 ```javascript
-// import {readExcelData} from 'excels-data'
-var readExcelData = require('excels-data').readExcelData;
+// import {readExcelData} from 'excel-data'
+var readExcelData = require('excel-data').readExcelData;
 ```
 
 ##### Read header & data from filtered sheets
