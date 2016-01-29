@@ -130,7 +130,7 @@ function readHeader(fileName, sheetName, opts) {
 			{skipRows: 0}
 *
 **/
-function read(fileName, opts) {
+function readExcelData(fileName, opts) {
 	opts = opts || {}
 	const skipRows = opts.skipRows || 0
 
@@ -204,5 +204,5 @@ function read(fileName, opts) {
 
 
 export {
-	read
+	readExcelData
 }
