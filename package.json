@@ -1,6 +1,6 @@
 {
   "name": "excel-data",
-  "version": "0.0.1",
+  "version": "1.0.1",
   "description": "A simple excel reader",
   "main": "dist/index.js",
   "scripts": {

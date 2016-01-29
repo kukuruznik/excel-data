@@ -1,48 +1,10 @@
 import {expect} from 'chai'
-import {readHeader, readData} from '../dist/index'
+import {read} from '../src/index'
 
-describe('excel reader', () => {
-	describe('#readHeader', () => {
-		it('should have valid header', () => {			
-
-			const header = readHeader(
-				'./test/test.xlsx', 
-				{
-					acceptsSheet: (sheetName) => sheetName === 'staffs',
-					atRow: 1,					
-				})
-
-			expect(header.columns).to.eql(['Name','Email','Age','Lowest Level','Highest Level','Decimal Value','Hex Value'])
-		})
-
-		it('should have valid map header', () => {			
-
-			const header = readHeader(
-				'./test/test.xlsx', 
-				{
-					acceptsSheet: (sheetName) => sheetName === 'staffs',
-					atRow: 1,
-					hasMapping: true
-				})
-
-			expect(header.columns).to.eql(['Name','Email','Age','Lowest Level','Highest Level','Decimal Value','Hex Value'])
-			
-			//without mapping
-			expect(header.mapColumns['name']).not.to.equal('name')
-			expect(header.mapColumns['email']).not.to.equal('email')
-			expect(header.mapColumns['age']).not.to.equal('age')
-
-			//with mapping
-			expect(header.mapColumns['lowestlevel']).to.equal('salarylevel')
-			expect(header.mapColumns['highestlevel']).to.equal('salarylevel')
-			expect(header.mapColumns['decimalvalue']).to.equal('decimal')
-			expect(header.mapColumns['hexvalue']).to.equal('hex')
-		})
-	})
-
-	describe('#readData', () => {
+describe('excel reader', () => {	
+	describe('#read', () => {
 		it('should return only data for filtered sheets (salarylevel)', () => {			
-			const data = readData(
+			const data = read(
 					'./test/test.xlsx', 
 					{
 						acceptsSheet: (sheetName) => sheetName === 'salarylevel'
@@ -53,57 +15,68 @@ describe('excel reader', () => {
 
 			//return data for sheet salarylevel
 			expect(data.salarylevel).not.to.be.undefined
-
+			expect(data.salarylevel.header).not.to.be.undefined
+			expect(data.salarylevel.data).not.to.be.undefined
 		})
 
-		it('should have valid data', () => {			
-			const header = readHeader(
-				'./test/test.xlsx', 
-				{
-					acceptsSheet: (sheetName) => sheetName.indexOf('staffs') > -1,
-					atRow: 1,
-					hasMapping: true,
-				})
-
-			const data = readData(
+		it('should have valid header columns', () => {			
+			const data = read(
 					'./test/test.xlsx', 
 					{
 						acceptsSheet: (sheetName) => sheetName.indexOf('staffs') > -1,
-						header: header.columns,
-						skipRows: 4
-					})			
+						hasMapping: true,
+						skipRows: 1
+					})						
 
-			const staffs = data.staffs
-
-			expect(staffs.filter(i => i.email === 'john@gmail.com')).not.to.be.null
-			expect(staffs.filter(i => i.decimalvalue === '3232')).not.to.be.null
+			expect(data.staffs.header.columns).to.eql(['name', 'email', 'age', 'lowestlevel', 'highestlevel', 'decimalvalue', 'hexvalue'])
 		})
 
-		it('should merge data from 2 sheet', () => {			
-			const header = readHeader(
-				'./test/test.xlsx', 
-				{
-					acceptsSheet: (sheetName) => sheetName.indexOf('staffs') > -1,
-					atRow: 1,
-					hasMapping: true					
-				})
-
-			const data = readData(
+		it('should have valid header columns mapping', () => {			
+			const data = read(
 					'./test/test.xlsx', 
 					{
 						acceptsSheet: (sheetName) => sheetName.indexOf('staffs') > -1,
-						header: header.columns,
-						skipRows: 4,
+						hasMapping: true,
+						skipRows: 1
+					})						
+
+			expect(data.staffs.header.mapColumns).to.eql({
+				'lowestlevel': 'salarylevel', 
+				'highestlevel': 'salarylevel', 
+				'decimalvalue': 'decimal', 
+				'hexvalue': 'hex'})
+		})
+
+		it('should have valid data', () => {
+			const data = read(
+					'./test/test.xlsx', 
+					{
+						acceptsSheet: (sheetName) => sheetName.indexOf('staffs') > -1,
+						hasMapping: true,
+						skipRows: 1
+					})						
+
+			expect(data.staffs.data.filter(i => i.email === 'john@gmail.com')).not.to.be.null
+			expect(data.staffs.data.filter(i => i.decimalvalue === '3232')).not.to.be.null
+		})
+
+		it('should merge data from 2 sheets', () => {			
+			const data = read(
+					'./test/test.xlsx', 
+					{
+						acceptsSheet: (sheetName) => sheetName.indexOf('staffs') > -1,
+						hasMapping: true,
+						skipRows: 1,
 						mergeData: true
 					})			
 
 			//data in sheet#staffs
-			expect(data.filter(i => i.email === 'john@gmail.com')).not.to.be.null
-			expect(data.filter(i => i.decimalvalue === '3232')).not.to.be.null
+			expect(data.data.filter(i => i.email === 'john@gmail.com')).not.to.be.null
+			expect(data.data.filter(i => i.decimalvalue === '3232')).not.to.be.null
 
-			//data in sheet#staffs_2015
-			expect(data.filter(i => i.email === 'bill@gmail.com')).not.to.be.null
-			expect(data.filter(i => i.hexvalue === '8A9B1')).not.to.be.null
+			// //data in sheet#staffs_2015
+			 expect(data.data.filter(i => i.email === 'bill@gmail.com')).not.to.be.null
+			 expect(data.data.filter(i => i.hexvalue === '8A9B1')).not.to.be.null
 		})
 	})
 })
