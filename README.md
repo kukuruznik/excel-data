@@ -5,19 +5,19 @@ npm install excel-data
 
 # Read Data
 ```javascript
-// import {readExcelData} from 'excel-data'
-var readExcelData = require('excel-data').readExcelData;
+// import read from 'excel-data'
+var read = require('excel-data');
 ```
 
 ##### 1. Read data from all sheets
 ```javascript
-var data = readExcelData('test.xlsx');
+var data = read('test.xlsx');
 ```
 
 
-##### 2. Read data from all sheets - ignore skipRows
+##### 2. Read data from all sheets - ignore top rows (skipRows)
 ```javascript
-var data = readExcelData(
+var data = read(
 		'test.xlsx', 
 		{
 			skipRows: 1
@@ -27,7 +27,7 @@ var data = readExcelData(
 
 ##### 3. Read & merge data from all sheets (same data info)
 ```javascript
-var data = readExcelData(
+var data = read(
 		'test.xlsx', 
 		{
 			mergeData: true
@@ -37,7 +37,7 @@ var data = readExcelData(
 
 ##### 4. Read data from all sheets - has header columns mapping
 ```javascript
-var data = readExcelData(
+var data = read(
 		'test.xlsx', 
 		{
 			hasMapping: true,
@@ -45,11 +45,12 @@ var data = readExcelData(
 ```
 
 
-##### 5. Readdata from filtered sheets
+##### 5. Read data from filtered sheets
 ```javascript
-var data = readExcelData(
+var data = read(
 		'test.xlsx', 
 		{
-			acceptsSheet: function(sheetName) { return sheetName === 'salarylevel' }
+			//acceptsSheet: sheetName => sheetName === 'staffs_2015'
+			acceptsSheet: function(sheetName) { return sheetName === 'staffs_2015' }
 		});
 ```
