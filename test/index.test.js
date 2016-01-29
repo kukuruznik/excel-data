@@ -1,10 +1,10 @@
 import {expect} from 'chai'
-import {readExcelData} from '../src/index'
+import read from '../src/index'
 
 describe('excel reader', () => {	
-	describe('#readExcelData', () => {
+	describe('#read', () => {
 		it('should return only data for filtered sheets (salarylevel)', () => {			
-			const data = readExcelData(
+			const data = read(
 					'./test/test.xlsx', 
 					{
 						acceptsSheet: (sheetName) => sheetName === 'salarylevel'
@@ -20,7 +20,7 @@ describe('excel reader', () => {
 		})
 
 		it('should have valid header columns', () => {			
-			const data = readExcelData(
+			const data = read(
 					'./test/test.xlsx', 
 					{
 						acceptsSheet: (sheetName) => sheetName.indexOf('staffs') > -1,
@@ -32,7 +32,7 @@ describe('excel reader', () => {
 		})
 
 		it('should have valid header columns mapping', () => {			
-			const data = readExcelData(
+			const data = read(
 					'./test/test.xlsx', 
 					{
 						acceptsSheet: (sheetName) => sheetName.indexOf('staffs') > -1,
@@ -48,7 +48,7 @@ describe('excel reader', () => {
 		})
 
 		it('should have valid data', () => {
-			const data = readExcelData(
+			const data = read(
 					'./test/test.xlsx', 
 					{
 						acceptsSheet: (sheetName) => sheetName.indexOf('staffs') > -1,
@@ -61,7 +61,7 @@ describe('excel reader', () => {
 		})
 
 		it('should merge data from 2 sheets', () => {			
-			const data = readExcelData(
+			const data = read(
 					'./test/test.xlsx', 
 					{
 						acceptsSheet: (sheetName) => sheetName.indexOf('staffs') > -1,
