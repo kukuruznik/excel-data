@@ -71,12 +71,12 @@ describe('excel reader', () => {
 					})			
 
 			//data in sheet#staffs
-			expect(data.data.filter(i => i.email === 'john@gmail.com')).not.to.be.null
-			expect(data.data.filter(i => i.decimalvalue === '3232')).not.to.be.null
+			expect(data.all.data.filter(i => i.email === 'john@gmail.com')).not.to.be.null
+			expect(data.all.data.filter(i => i.decimalvalue === '3232')).not.to.be.null
 
 			// //data in sheet#staffs_2015
-			 expect(data.data.filter(i => i.email === 'bill@gmail.com')).not.to.be.null
-			 expect(data.data.filter(i => i.hexvalue === '8A9B1')).not.to.be.null
+			 expect(data.all.data.filter(i => i.email === 'bill@gmail.com')).not.to.be.null
+			 expect(data.all.data.filter(i => i.hexvalue === '8A9B1')).not.to.be.null
 		})
 	})
 })

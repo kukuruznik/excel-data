@@ -40,7 +40,7 @@ function readHeader(fileName, sheetName, opts) {
 	//extract header from the first accepted sheet
 	const sheetNameLower = toLowerAndNoSpace(sheetName)
 
-	if (opts.acceptsSheet === undefined || opts.acceptsSheet(sheetNameLower)) {
+	if (!opts.acceptsSheet || opts.acceptsSheet(sheetNameLower)) {
 		const data = xlsx.utils.sheet_to_json(
 					workbook.Sheets[sheetName], 
 					opts)
@@ -134,7 +134,7 @@ function read(fileName, opts) {
 	opts = opts || {}
 	const skipRows = opts.skipRows || 0
 
-	if (opts.startRow !== undefined && opts.endRow !== undefined) {
+	if (opts.startRow && opts.endRow) {
 		opts.range = { s: {c: 0, r: opts.startRow}, e: {c: 100, r: opts.endRow}}
 	}	
 
@@ -145,7 +145,7 @@ function read(fileName, opts) {
 	workbook.SheetNames.forEach( sheetName => {		
 		const sheetNameLower = toLowerAndNoSpace(sheetName)
 
-		if (opts.acceptsSheet === undefined || opts.acceptsSheet(sheetNameLower)) {
+		if (!opts.acceptsSheet || opts.acceptsSheet(sheetNameLower)) {
 
 			//header to read for current sheet
 			const header = 
@@ -171,14 +171,14 @@ function read(fileName, opts) {
 
 			//if merge data, result as {header, data}
 			if (opts.mergeData) {
-				if (sheetsData.header === undefined) {
-					sheetsData = {
+				if (!sheetsData.all) {
+					sheetsData.all = {
 						header: header,
 						data: data
 					}
 				}
 				else {
-					sheetsData.data.push(data)
+					sheetsData.all.data.push(data)
 				}
 			}
 			else {
