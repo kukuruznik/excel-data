@@ -63,13 +63,7 @@ describe('Lookup', () => {
 					dtcframe: '1',
 					dtcformat: '1'
 				}, 
-				'readdtccommandlist', 
-				(item, key) =>
-					item.key === key.key &&
-					item.offset === key.offset &&
-					item.dtcframe === key.dtcframe &&
-					item.dtcformat === key.dtcformat
-				)
+				'readdtccommandlist')
 			
 			expect(enumItem.key).to.equal('16 00 00')
 			expect(enumItem.offset).to.equal('0')
@@ -77,15 +71,5 @@ describe('Lookup', () => {
 			expect(enumItem.dtcformat).to.equal('1')
 			expect(enumItem.value).to.equal('8')
 		})
-		
-
-		it('should return special enum value = null', () => {				
-			const enumItem = lookup.lookupValue(
-				'DUMMY KEY', 
-				'protocols', 
-				(item, key) => item.key === key)
-
-			expect(enumItem).to.be.null
-		})	
 	})
 })	

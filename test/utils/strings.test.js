@@ -1,5 +1,5 @@
 import {expect} from 'chai'
-import {toLowerAndNoSpace} from '../../dist/utils/strings'
+import {toLowerAndNoSpace} from '../../src/utils/strings'
 
 
 describe("utils", () =>

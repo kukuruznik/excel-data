@@ -1,3 +1,5 @@
+import {partOfObject} from './utils/object'
+
 /*
 contains many enums loaded from multiple excel file. 
 each will be from a separated excel sheet
@@ -26,22 +28,22 @@ class Lookup {
 
 	getEnums(){
 		return this.enums
-	}
+	}	
 
 	/*
 	return 
 		enum item
-	using param @match if lookup basing on multiple columns
-	@match = (enum item, key) => bool
+	@key
+		could be a single value or an object	
 	*/
-	lookupValue(key, enumName, match) {
+	lookupValue(key, enumName) {
 		const theEnum = this.enums[enumName]
 
 		if (theEnum) {
 			const enumItems = 
 					theEnum.data.filter(i => 
-						match ? 
-							match(i, key) : 
+						key instanceof Object ? 
+							partOfObject(key, i) : 
 							i.key === key)
 
 			//must match only one enum

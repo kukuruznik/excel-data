@@ -1,5 +1,5 @@
 import {expect} from 'chai'
-import {toLowerAndNoSpaceStringsArray} from '../../dist/utils/array'
+import {toLowerAndNoSpaceStringsArray} from '../../src/utils/array'
 
 describe("utils", () =>
 	describe("array", () =>
