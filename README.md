@@ -5,17 +5,18 @@ npm install excel-data
 
 # Read Data
 ```javascript
-// import read from 'excel-data'
-var read = require('excel-data');
+// import {read, Lookup} from 'excel-data'
+var read = require('excel-data').read;
+var Lookup = require('excel-data').Lookup;
 ```
 
-##### 1. Read data from all sheets
+##### Read data from all sheets
 ```javascript
 var data = read('test.xlsx');
 ```
 
 
-##### 2. Read data from all sheets - ignore top rows (skipRows)
+##### Read data from all sheets - ignore top rows (skipRows)
 ```javascript
 var data = read(
 		'test.xlsx', 
@@ -25,7 +26,7 @@ var data = read(
 ```
 
 
-##### 3. Read & merge data from all sheets (same data info)
+##### Read & merge data from all sheets (same data info)
 ```javascript
 var data = read(
 		'test.xlsx', 
@@ -35,7 +36,7 @@ var data = read(
 ```
 
 
-##### 4. Read data from all sheets - has header columns mapping
+##### Read data from all sheets - has header columns mapping
 ```javascript
 var data = read(
 		'test.xlsx', 
@@ -45,7 +46,7 @@ var data = read(
 ```
 
 
-##### 5. Read data from filtered sheets
+##### Read data from filtered sheets
 ```javascript
 var data = read(
 		'test.xlsx', 
@@ -53,4 +54,47 @@ var data = read(
 			//acceptsSheet: sheetName => sheetName === 'staffs_2015'
 			acceptsSheet: function(sheetName) { return sheetName === 'staffs_2015' }
 		});
+```
+
+
+# Lookup Data
+```javascript
+var data1 = read(
+		'employee_2015.xlsx', 
+		{
+			skipRows: 1
+			mergeData: true
+		});
+
+var data2 = read(
+		'employee_2016.xlsx', 
+		{
+			skipRows: 1
+			mergeData: true
+		});
+
+const lookup = new Lookup(
+		data1,
+		data2,
+		...)
+```	
+
+##### lookup with one or multiple columns
+
+```javascript
+const item = lookup.lookupValue(
+			{
+				year: 2015, 
+				level: 4
+			},
+			'salarylevel' //sheet name in lowercase and no spaces
+		)
+
+console.log(item.salary)
+```
+
+##### special lookup table with 2 main columns (key + value)
+```javascript
+const item = lookup.lookupValue('KW2000', 'protocols')
+console.log(item.value)
 ```
