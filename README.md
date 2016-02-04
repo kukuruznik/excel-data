@@ -23,12 +23,13 @@ read(
 .then(result => {
 	// code to proceed result
 })
-
+```
 
 ### Result
 #### with mergeData = false
+```javascript
 {
-	employee_2015: {
+	employee_2015: { //excel sheet name in lowercase & no spaces
 		header: {
 			originalColumns: ['First Name', 'Last Name', 'Email', 'DOB'],
 			columns: ['firstname', 'lastname', 'email', 'dob']			
@@ -48,8 +49,10 @@ read(
 		]
 	}
 }
+```
 
 #### with mergeData = true
+```javascript
 {
 	all: {
 		header: {
