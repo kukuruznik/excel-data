@@ -5,11 +5,10 @@ npm install excel-data
 
 # Read Data
 ```javascript
-// import {read} from 'excel-data'
-const read = require('excel-data').read;
+import {read} from 'excel-data'
+//var read = require('excel-data').read;
 
 read(
-	//'test.xlsx', 
 	[
 		'test1.xlsx', 
 		'test2.xlsx', 
@@ -22,11 +21,12 @@ read(
 	}
 )
 .then(result => {
-	
+	// code to proceed result
 })
 
 
-//mergeData = false
+### Result
+#### with mergeData = false
 {
 	employee_2015: {
 		header: {
@@ -49,7 +49,7 @@ read(
 	}
 }
 
-//mergeData = true
+#### with mergeData = true
 {
 	all: {
 		header: {
