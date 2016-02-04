@@ -47,6 +47,7 @@ function readHeader(fileName, sheetName, opts) {
 					opts)
 
 		const result = { 
+			originalColumns: data[0],
 			columns: toLowerAndNoSpaceStringsArray(data[0]),
 			mapColumns: {}
 		}
@@ -68,8 +69,6 @@ function readHeader(fileName, sheetName, opts) {
 
 	return null;
 }
-
-
 
 /**
 * return
@@ -110,18 +109,11 @@ function readHeader(fileName, sheetName, opts) {
 				...
 			],
 		}
+
+parameters		
  @opts
 		filter sheets
 			callback acceptsSheet(sheetName) to filter
-		format
- 			data as json
- 				without header
- 			data as matrix
-				{header:1}
-			data as (column letter, value)
-				{header:'A'}
-			data with user-defined column names
-				{header:2}
 		data in a range
 			{range: {s:{c:0, r:0}, e:{c:100, r:100}}}}
 			{startRow: 1, endRow: 10}
@@ -129,78 +121,138 @@ function readHeader(fileName, sheetName, opts) {
 			{mergeData: true}
 		skip rows
 			{skipRows: 0}
+			{specialSkipRows: {sheet1: 1, sheet3: 1}}
 *
 **/
-function read(fileName, opts) {
-	opts = opts || {}
-	const skipRows = opts.skipRows || 0
+function read(fileNames, opts) {		
+	let data = {}
 
+	opts = opts || {}
 	if (opts.startRow && opts.endRow) {
 		opts.range = { s: {c: 0, r: opts.startRow}, e: {c: 100, r: opts.endRow}}
 	}	
-
-	let sheetsData = {}
-	const workbook = xlsx.readFile(fileName)	
 	
-	//read data for each accepted sheet
-	workbook.SheetNames.forEach( sheetName => {		
-		const sheetNameLower = toLowerAndNoSpace(sheetName)
+	const files = fileNames instanceof Array ? fileNames : [fileNames]	
 
-		if (!opts.acceptsSheet || opts.acceptsSheet(sheetNameLower)) {
+	return new Promise((resolve, reject) => {	
+		let promises = files.map(file => readOneFile(file, opts))
 
-			//header to read for current sheet
-			const header = 
-				readHeader(
-					fileName, 
-					sheetName,
-					{
-						skipRows: skipRows,
-						hasMapping: opts.hasMapping
+		Promise
+			.all(promises)
+			.then(results => {
+				resolve(
+					mergeSameData(results))
+			})
+	})
+}
+
+function mergeSameData(arr) {
+	let result = {}
+
+	for(const o of arr)	
+		for(const prop in o)
+			if (result[prop])
+				result[prop].data.push(o[prop].data)		
+			else
+				result[prop] = o[prop]
+
+	return result
+}
+
+function readOneFile(fileName, opts) {
+	return new Promise((resolve, reject) => {				
+		const workbook = xlsx.readFile(fileName)
+
+		//read data for each accepted sheet
+		let promises = 
+				workbook.SheetNames
+					.filter(sheetName => {
+							console.log(toLowerAndNoSpace(sheetName))
+							return !opts.acceptsSheet || 
+							opts.acceptsSheet(
+								toLowerAndNoSpace(sheetName))
+					})
+					.map(sheetName => {
+						console.log(sheetName)
+						return readOneSheet(workbook, fileName, sheetName, opts)
 					})
 
-			opts.header = header.columns
+		Promise
+			.all(promises)
+			.then(results => {
+				resolve(					
+					mergeSameData(results))
+			})
+	})
+}
+
+function readOneSheet(workbook, fileName, sheetName, opts) {	
+	//console.log(`loaded sheet #${fileName} #${sheetName}`)
+
+	let sheetData = {}
+	const sheetNameLower = toLowerAndNoSpace(sheetName)	
+
+	const skipRows = 
+			opts.specialSkipRows && opts.specialSkipRows[sheetNameLower] ?
+				opts.specialSkipRows[sheetNameLower] :
+				opts.skipRows || 0
+
+	//header to read for current sheet
+	const header = 
+		readHeader(
+			fileName, 
+			sheetName,
+			{
+				skipRows: skipRows,
+				hasMapping: opts.hasMapping
+			})
+
+	opts.header = header.columns
 
 
-			let data = xlsx.utils.sheet_to_json(
-							workbook.Sheets[sheetName], 
-							opts)
+	let data = xlsx.utils.sheet_to_json(
+					workbook.Sheets[sheetName], 
+					opts)
 
-			data.splice(
-				0, 
-				opts.hasMapping ? skipRows + 3 : skipRows + 1
-				)
+	data.splice(
+		0, 
+		opts.hasMapping ? skipRows + 3 : skipRows + 1
+		)
 
-			//if merge data, result as {header, data}
-			if (opts.mergeData) {
-				if (!sheetsData.all) {
-					sheetsData.all = {
-						header: header,
-						data: data
-					}
-				}
-				else {
-					sheetsData.all.data.push(data)
-				}
-			}
-			else {
-				/*
-				not merge, result as
-				{
-					sheet1: {header, data},
-					sheet2: {header, data},
-					...
-				}
-				*/
-
-				sheetsData[sheetNameLower] = {
-					header: header,
-					data: data
-				}
+	//if merge data, result as {header, data}
+	if (opts.mergeData) {
+		if (!sheetData.all) {
+			sheetData.all = {
+				header: header,
+				data: data
 			}
 		}
-	})
+		else {
+			sheetData.all.data.push(data)
+		}
+	}
+	else {
+		/*
+		not merge, result as
+		{
+			sheet1: {header, data},
+			sheet2: {header, data},
+			...
+		}
+		*/
 
-	return sheetsData
+		if (sheetData[sheetNameLower]) {
+			sheetData[sheetNameLower].data.push(data)
+		}
+		else {
+			sheetData[sheetNameLower] = {
+				header: header,
+				data: data
+			}
+		}
+	}
+
+	return Promise.resolve(sheetData)
 }
 
 

@@ -5,96 +5,61 @@ npm install excel-data
 
 # Read Data
 ```javascript
-// import {read, Lookup} from 'excel-data'
-var read = require('excel-data').read;
-var Lookup = require('excel-data').Lookup;
-```
+// import {read} from 'excel-data'
+const read = require('excel-data').read;
 
-##### Read data from all sheets
-```javascript
-var data = read('test.xlsx');
-```
-
-
-##### Read data from all sheets - ignore top rows (skipRows)
-```javascript
-var data = read(
-		'test.xlsx', 
-		{
-			skipRows: 1
-		});
-```
-
-
-##### Read & merge data from all sheets (same data info)
-```javascript
-var data = read(
-		'test.xlsx', 
-		{
-			mergeData: true
-		});
-```
+read(
+	//'test.xlsx', 
+	[
+		'test1.xlsx', 
+		'test2.xlsx', 
+		...
+	],
+	{
+		skipRows: 0,		// optional: ignore first N rows
+		mergeData: true,	// merge same data from all sheets
+		acceptsSheet: sheetName => sheetName.startsWith('employee')	//sheetName as already in lowercase
+	}
+)
+.then(result => {
+	
+})
 
 
-##### Read data from all sheets - has header columns mapping
-```javascript
-var data = read(
-		'test.xlsx', 
-		{
-			hasMapping: true,
-		});
-```
+//mergeData = false
+{
+	employee_2015: {
+		header: {
+			originalColumns: ['First Name', 'Last Name', 'Email', 'DOB'],
+			columns: ['firstname', 'lastname', 'email', 'dob']			
+		},
+		data: [
+			{firstname: 'Bill', lastname: 'Gates', email: 'gates@yahoo.com', dob: '4/1/1945'},
+			{firstname: 'Barack', lastname: 'Obama', email: 'barak@abc.com', dob: '6/30/1965'},
+		]
+	},
+	employee_2016: {
+		header: {
+			originalColumns: ...
+			columns: ...
+		},
+		data: [
+			...
+		]
+	}
+}
 
-
-##### Read data from filtered sheets
-```javascript
-var data = read(
-		'test.xlsx', 
-		{
-			//acceptsSheet: sheetName => sheetName === 'staffs_2015'
-			acceptsSheet: function(sheetName) { return sheetName === 'staffs_2015' }
-		});
-```
-
-
-# Lookup Data
-```javascript
-var data1 = read(
-		'employee_2015.xlsx', 
-		{
-			skipRows: 1
-			mergeData: true
-		});
-
-var data2 = read(
-		'employee_2016.xlsx', 
-		{
-			skipRows: 1
-			mergeData: true
-		});
-
-const lookup = new Lookup(
-		data1,
-		data2,
-		...)
-```	
-
-##### lookup with one or multiple columns
-
-```javascript
-const item = lookup.lookupValue(
-			{
-				year: 2015, 
-				level: 4
-			},
-			'salarylevel' //sheet name in lowercase and no spaces
-		)
-
-console.log(item.salary)
-```
-
-##### special lookup table with 2 main columns (key + value)
-```javascript
-const item = lookup.lookupValue('KW2000', 'protocols')
-console.log(item.value)
+//mergeData = true
+{
+	all: {
+		header: {
+			originalColumns: ['First Name', 'Last Name', 'Email', 'DOB'],
+			columns: ['firstname', 'lastname', 'email', 'dob']			
+		},
+		data: [
+			{firstname: 'Bill', lastname: 'Gates', email: 'gates@yahoo.com', dob: '4/1/1945'},
+			{firstname: 'Barack', lastname: 'Obama', email: 'barak@abc.com', dob: '6/30/1965'},
+		]
+	}
+}
 ```

@@ -6,12 +6,12 @@ describe('Lookup', () => {
 	let lookup
 
 	before(() => {
-		const globalEnumsData = read('./test/test_data/lookup/global_lookup_tables.xlsx')
-		const localEnumsData = read('./test/test_data/lookup/local_lookup_tables.xlsx')
-
-		lookup = new Lookup(
-					globalEnumsData,
-					localEnumsData)
+		Promise
+			.all([
+					read('./test/test_data/lookup/global_lookup_tables.xlsx'),
+					read('./test/test_data/lookup/local_lookup_tables.xlsx')
+				])
+			.then(data => lookup = new Lookup(...data))
 	})
 
 	describe('#load', () =>

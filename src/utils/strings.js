@@ -1,7 +1,7 @@
 function toLowerAndNoSpace(s) {
 	return !s ? 
-				s : 
-				s.toLowerCase().replace(/ /g, '')
+			s : 
+			s.toLowerCase().replace(/ /g, '')
 }
 
 module.exports = {
