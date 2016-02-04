@@ -54,7 +54,7 @@ read(
 #### with mergeData = true
 ```javascript
 {
-	all: {
+	all: {	// all: represent for all sheets
 		header: {
 			originalColumns: ['First Name', 'Last Name', 'Email', 'DOB'],
 			columns: ['firstname', 'lastname', 'email', 'dob']			
