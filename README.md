@@ -16,8 +16,8 @@ read(
 	],
 	{
 		skipRows: 0,		// optional: ignore first N rows
-		mergeData: true,	// merge same data from all sheets
-		acceptsSheet: sheetName => sheetName.startsWith('employee')	//sheetName as already in lowercase
+		mergeData: true,	// optional: merge same data from all sheets
+		acceptsSheet: sheetName => sheetName.startsWith('employee')	// optional: sheetName as already in lowercase
 	}
 )
 .then(result => {
