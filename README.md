@@ -5,11 +5,10 @@ npm install excel-data
 
 # Read Data
 ```javascript
-// import {read} from 'excel-data'
-const read = require('excel-data').read;
+import {read} from 'excel-data'
+//var read = require('excel-data').read;
 
 read(
-	//'test.xlsx', 
 	[
 		'test1.xlsx', 
 		'test2.xlsx', 
@@ -17,18 +16,20 @@ read(
 	],
 	{
 		skipRows: 0,		// optional: ignore first N rows
-		mergeData: true,	// merge same data from all sheets
-		acceptsSheet: sheetName => sheetName.startsWith('employee')	//sheetName as already in lowercase
+		mergeData: true,	// optional: merge same data from all sheets
+		acceptsSheet: sheetName => sheetName.startsWith('employee')	// optional: sheetName as already in lowercase
 	}
 )
 .then(result => {
-	
+	// code to proceed result
 })
+```
 
-
-//mergeData = false
+### Result
+#### with mergeData = false
+```javascript
 {
-	employee_2015: {
+	employee_2015: { //excel sheet name in lowercase & no spaces
 		header: {
 			originalColumns: ['First Name', 'Last Name', 'Email', 'DOB'],
 			columns: ['firstname', 'lastname', 'email', 'dob']			
@@ -48,10 +49,12 @@ read(
 		]
 	}
 }
+```
 
-//mergeData = true
+#### with mergeData = true
+```javascript
 {
-	all: {
+	all: {	// all: represent for all sheets
 		header: {
 			originalColumns: ['First Name', 'Last Name', 'Email', 'DOB'],
 			columns: ['firstname', 'lastname', 'email', 'dob']			
