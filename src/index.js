@@ -152,7 +152,7 @@ function mergeSameData(arr) {
 	for(const o of arr)	
 		for(const prop in o)
 			if (result[prop])
-				result[prop].data.push(o[prop].data)		
+				result[prop].data.push(...o[prop].data)		
 			else
 				result[prop] = o[prop]
 
