@@ -2,27 +2,27 @@ import {expect} from 'chai'
 import {read} from '../src/index'
 
 describe('excel reader', () => {	
-	describe('#read', () => {
-		it('should return only data for filtered sheets (salarylevel)', () => {			
-			read(
-				'.//test/test_data/test.xlsx', 
-				{
-					acceptsSheet: (sheetName) => sheetName === 'salarylevel'
-				}
-			)
-			.then(data => {
-				//not return data for sheet staffs
-				expect(data.staffs).to.be.undefined
+	describe('#read', () => {		
+		it('should return only data for filtered sheets (salarylevel)', () => {		
+			return read(
+					'.//test/test_data/test.xlsx', 
+					{
+						acceptsSheet: (sheetName) => sheetName === 'salarylevel'
+					}
+				)
+				.then(data =>{
+					//not return data for sheet staffs
+					expect(data.staffs).to.be.undefined,
 
-				//return data for sheet salarylevel
-				expect(data.salarylevel).not.to.be.undefined
-				expect(data.salarylevel.header).not.to.be.undefined
-				expect(data.salarylevel.data).not.to.be.undefined
-			})
+					//return data for sheet salarylevel
+					expect(data.salarylevel).not.to.be.undefined,
+					expect(data.salarylevel.header).not.to.be.undefined,
+					expect(data.salarylevel.data).not.to.be.undefined
+				})
 		})
 
 		it('should have valid header columns', () => {			
-			read(
+			return read(
 				'.//test/test_data/test.xlsx', 
 				{
 					acceptsSheet: (sheetName) => sheetName.indexOf('staffs') > -1,
@@ -36,7 +36,7 @@ describe('excel reader', () => {
 		})
 
 		it('should have valid header columns mapping', () => {			
-			read(
+			return read(
 				'.//test/test_data/test.xlsx', 
 				{
 					acceptsSheet: (sheetName) => sheetName.indexOf('staffs') > -1,
@@ -53,8 +53,24 @@ describe('excel reader', () => {
 			})
 		})
 
+		it('should return data with only one column', () => {			
+			return read(
+				'.//test/test_data/test.xlsx', 
+				{
+					acceptsSheet: (sheetName) => sheetName.indexOf('staffs') > -1,
+					hasMapping: true,
+					skipRows: 1,
+					columns: ['hexvalue']
+				}
+			)
+			.then(data => {				
+				expect(data.staffs.data[0]).to.have.property('hexvalue')
+				expect(data.staffs.data[0]).not.to.have.property('decimalvalue')
+			})			
+		})
+
 		it('should have valid data', () => {
-			read(
+			return read(
 				'.//test/test_data/test.xlsx', 
 				{
 					acceptsSheet: (sheetName) => sheetName.indexOf('staffs') > -1,
@@ -69,7 +85,7 @@ describe('excel reader', () => {
 		})
 
 		it('should merge data from 2 sheets', () => {			
-			read(
+			return read(
 				'.//test/test_data/test.xlsx', 
 				{
 					acceptsSheet: (sheetName) => sheetName.indexOf('staffs') > -1,

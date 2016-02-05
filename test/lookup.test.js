@@ -2,7 +2,6 @@ import {expect} from 'chai'
 import {read, Lookup} from '../src/index'
 
 describe('Lookup', () => {
-	
 	let lookup
 
 	before(() => {

@@ -122,6 +122,8 @@ parameters
 		skip rows
 			{skipRows: 0}
 			{specialSkipRows: {sheet1: 1, sheet3: 1}}
+		selected columns (in lowercase and without spaces)
+			{columns: [col1, colo2, ...]}
 *
 **/
 function read(fileNames, opts) {		
@@ -139,10 +141,10 @@ function read(fileNames, opts) {
 
 		Promise
 			.all(promises)
-			.then(results => {
+			.then(results =>
 				resolve(
-					mergeSameData(results))
-			})
+					mergeSameData(results)))
+			.catch(err => reject(err))
 	})
 }
 
@@ -166,23 +168,21 @@ function readOneFile(fileName, opts) {
 		//read data for each accepted sheet
 		let promises = 
 				workbook.SheetNames
-					.filter(sheetName => {
-							console.log(toLowerAndNoSpace(sheetName))
-							return !opts.acceptsSheet || 
+					.filter(sheetName => 
+							!opts.acceptsSheet || 
 							opts.acceptsSheet(
-								toLowerAndNoSpace(sheetName))
-					})
+								toLowerAndNoSpace(sheetName)))
 					.map(sheetName => {
-						console.log(sheetName)
+						//console.log(sheetName)
 						return readOneSheet(workbook, fileName, sheetName, opts)
 					})
 
 		Promise
 			.all(promises)
-			.then(results => {
+			.then(results =>				
 				resolve(					
-					mergeSameData(results))
-			})
+					mergeSameData(results)))
+			.catch(err => reject(err))
 	})
 }
 
@@ -207,7 +207,13 @@ function readOneSheet(workbook, fileName, sheetName, opts) {
 				hasMapping: opts.hasMapping
 			})
 
-	opts.header = header.columns
+	/*
+	* options to read only these columns from excel
+	* if param 'columns' available then use that as header else use all columns from header
+	* columns must all be in lowercase and without spaces
+	*/
+
+	opts.header = opts.columns || header.columns
 
 
 	let data = xlsx.utils.sheet_to_json(
@@ -219,7 +225,12 @@ function readOneSheet(workbook, fileName, sheetName, opts) {
 		opts.hasMapping ? skipRows + 3 : skipRows + 1
 		)
 
-	//if merge data, result as {header, data}
+	/*
+	if merge data, result as 
+	{
+		all: { header, data }
+	}
+	*/
 	if (opts.mergeData) {
 		if (!sheetData.all) {
 			sheetData.all = {
@@ -235,8 +246,8 @@ function readOneSheet(workbook, fileName, sheetName, opts) {
 		/*
 		not merge, result as
 		{
-			sheet1: {header, data},
-			sheet2: {header, data},
+			sheet1: { header, data },
+			sheet2: { header, data },
 			...
 		}
 		*/
