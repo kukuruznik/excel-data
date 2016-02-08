@@ -1,4 +1,4 @@
-import {partOfObject} from './utils/object'
+import {equalsWithoutCaseSentitive, partOfObject} from './utils/object'
 
 /*
 contains many enums loaded from multiple excel file. 
@@ -28,23 +28,28 @@ class Lookup {
 
 	getEnums(){
 		return this.enums
-	}	
+	}
+
+	getEnum(name) {
+		return this.enums[name] || this.enums[name + 's']
+
+	}
 
 	/*
 	return 
 		enum item
 	@key
 		could be a single value or an object	
-	*/
+	*/	
 	lookupValue(key, enumName) {
-		const theEnum = this.enums[enumName]
+		const theEnum = this.getEnum(enumName)
 
 		if (theEnum) {
 			const enumItems = 
 					theEnum.data.filter(i => 
-						key instanceof Object ? 
-							partOfObject(key, i) : 
-							i.key === key)
+									key instanceof Object ?
+										partOfObject(key, i) && equalsWithoutCaseSentitive(key, i) :
+										equalsWithoutCaseSentitive(i.key, key))
 
 			//must match only one enum
 			if (enumItems && enumItems.length === 1)

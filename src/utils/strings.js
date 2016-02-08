@@ -1,9 +1,15 @@
-function toLowerAndNoSpace(s) {
+export function toLowerAndNoSpace(s) {
 	return !s ? 
 			s : 
 			s.toLowerCase().replace(/ /g, '')
 }
 
-module.exports = {
-	toLowerAndNoSpace
-}
+
+// export function isNA(s) {
+// 	if (s === null || s === undefined || s.trim() === '')
+// 		return true
+
+// 	s = s.toLowerCase()
+
+// 	return s === 'na' || s === 'n/a'
+// }

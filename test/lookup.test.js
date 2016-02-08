@@ -14,7 +14,7 @@ describe('Lookup', () => {
 	})
 
 	describe('#load', () =>
-		it('should load all enums', () => {		
+		it('load all enums', () => {		
 			const enums = lookup.getEnums()
 			expect(enums.years).not.to.be.undefined
 			expect(enums.unknow).to.be.undefined
@@ -23,7 +23,7 @@ describe('Lookup', () => {
 
 	describe('#lookupName', () => {
 		
-		it('should return a valid enum name', () => {				
+		it('has mapping columns', () => {				
 			const mapColumns = {
 				_protocol_: 'protocols'
 			}
@@ -33,7 +33,7 @@ describe('Lookup', () => {
 		})
 		
 
-		it('should return enum name = null', () => {
+		it('none-existing enum', () => {
 			const enumName = lookup.lookupName('_protocol_', null)
 			expect(enumName).to.be.null
 		})
@@ -42,19 +42,19 @@ describe('Lookup', () => {
 
 	describe('#lookupValue', () => {
 		
-		it('should return a valid enum value', () => {								
+		it('valid enum', () => {								
 			const enumItem = lookup.lookupValue('PROTOCOL_BOSCH', 'protocols')
 			expect(enumItem.value).to.equal('9')
 		})
 		
 
-		it('should return enum value = null', () => {				
+		it('invalid enum', () => {				
 			const enumItem = lookup.lookupValue('DUMMY KEY', 'protocols')
 			expect(enumItem).to.be.null
 		})
 
 
-		it('should return a valid special enum value', () => {
+		it('for enums basing  on multiple columns', () => {
 			const enumItem = lookup.lookupValue(
 				{
 					key: '16 00 00',
