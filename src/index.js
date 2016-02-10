@@ -1,3 +1,4 @@
+import path from 'path'
 import xlsx from 'xlsx'
 import {toLowerAndNoSpace} from './utils/strings'
 import {toLowerAndNoSpaceStringsArray} from './utils/array'
@@ -46,7 +47,8 @@ export Lookup from './lookup'
 parameters		
  @opts
 		filter sheets
-			callback acceptsSheet(sheetName) to filter
+			callback acceptsSheet(sheetName) to filter sheets
+			callback acceptsRow(header, row) to filter rows
 		data in a range
 			{range: {s:{c:0, r:0}, e:{c:100, r:100}}}}
 			{startRow: 1, endRow: 10}
@@ -66,7 +68,7 @@ export function read(fileNames, opts) {
 	if (opts.startRow && opts.endRow) {
 		opts.range = { s: {c: 0, r: opts.startRow}, e: {c: 100, r: opts.endRow}}
 	}	
-	
+
 	const files = fileNames instanceof Array ? fileNames : [fileNames]	
 
 	return new Promise((resolve, reject) => {	
@@ -95,6 +97,8 @@ function mergeSameData(arr) {
 }
 
 function readOneFile(fileName, opts) {
+	console.log(`loading file ${path.basename(fileName)}`)
+
 	return new Promise((resolve, reject) => {				
 		const workbook = xlsx.readFile(fileName)
 
@@ -105,22 +109,22 @@ function readOneFile(fileName, opts) {
 							!opts.acceptsSheet || 
 							opts.acceptsSheet(
 								toLowerAndNoSpace(sheetName)))
-					.map(sheetName => {
-						//console.log(sheetName)
-						return readOneSheet(workbook, fileName, sheetName, opts)
-					})
+					.map(sheetName => 
+							readOneSheet(workbook, fileName, sheetName, opts))
 
 		Promise
 			.all(promises)
-			.then(results =>				
+			.then(results => {
+				console.log(`loaded file ${path.basename(fileName)}`)
 				resolve(					
-					mergeSameData(results)))
+					mergeSameData(results))
+			})
 			.catch(err => reject(err))
 	})
 }
 
 function readOneSheet(workbook, fileName, sheetName, opts) {	
-	//console.log(`loaded sheet #${fileName} #${sheetName}`)
+	console.log(`loading sheet ${sheetName}`)
 
 	let sheetData = {}
 	const sheetNameLower = toLowerAndNoSpace(sheetName)	
@@ -157,6 +161,10 @@ function readOneSheet(workbook, fileName, sheetName, opts) {
 		0, 
 		opts.hasMapping ? skipRows + 3 : skipRows + 1
 		)
+
+	//filter rows
+	if (opts.acceptsRow)
+		data = data.filter(row => opts.acceptsRow(header, row))
 
 	/*
 	if merge data, result as 
@@ -196,6 +204,7 @@ function readOneSheet(workbook, fileName, sheetName, opts) {
 		}
 	}
 
+	console.log(`loaded sheet ${sheetName}`)
 	return Promise.resolve(sheetData)
 }
 
