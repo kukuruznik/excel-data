@@ -56,7 +56,7 @@ parameters
 			{mergeData: true}
 		skip rows
 			{skipRows: 0}
-			{specialSkipRows: {sheet1: 1, sheet3: 1}}
+			{specialSkipRows: {sheet1: {skipRows: 1, hasMapping: false}, sheet3: {skipRows: 1, hasMapping: false}}}
 		selected columns (in lowercase and without spaces)
 			{columns: [col1, colo2, ...]}
 *
@@ -131,8 +131,13 @@ function readOneSheet(workbook, fileName, sheetName, opts) {
 
 	const skipRows = 
 			opts.specialSkipRows && opts.specialSkipRows[sheetNameLower] ?
-				opts.specialSkipRows[sheetNameLower] :
+				opts.specialSkipRows[sheetNameLower].skipRows :
 				opts.skipRows || 0
+
+	const hasMapping = 
+			opts.specialSkipRows && opts.specialSkipRows[sheetNameLower] ?
+				opts.specialSkipRows[sheetNameLower].hasMapping :
+				opts.hasMapping || false
 
 	//header to read for current sheet
 	const header = 
@@ -141,7 +146,7 @@ function readOneSheet(workbook, fileName, sheetName, opts) {
 			sheetName,
 			{
 				skipRows: skipRows,
-				hasMapping: opts.hasMapping
+				hasMapping: hasMapping
 			})
 
 	/*
