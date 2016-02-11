@@ -171,6 +171,12 @@ function readOneSheet(workbook, fileName, sheetName, opts) {
 	if (opts.acceptsRow)
 		data = data.filter(row => opts.acceptsRow(toLowerAndNoSpace(sheetName), header, row))
 
+	//add meta info to rows
+	data.forEach(row => {
+		row._sheet = sheetName
+		row._file = fileName
+	})
+
 	/*
 	if merge data, result as 
 	{
