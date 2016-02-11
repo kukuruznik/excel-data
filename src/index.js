@@ -164,7 +164,7 @@ function readOneSheet(workbook, fileName, sheetName, opts) {
 
 	//filter rows
 	if (opts.acceptsRow)
-		data = data.filter(row => opts.acceptsRow(header, row))
+		data = data.filter(row => opts.acceptsRow(toLowerAndNoSpace(sheetName), header, row))
 
 	/*
 	if merge data, result as 
