@@ -97,6 +97,9 @@ function mergeSameData(arr) {
 }
 
 function readOneFile(fileName, opts) {
+	if (!fileName)
+		return
+	
 	console.log(`loading file ${path.basename(fileName)}`)
 
 	return new Promise((resolve, reject) => {				
@@ -173,8 +176,8 @@ function readOneSheet(workbook, fileName, sheetName, opts) {
 
 	//add meta info to rows
 	data.forEach(row => {
-		row._sheet = sheetName
-		row._file = fileName
+		row._sheet = sheetName.toLowerCase()
+		row._file = fileName.toLowerCase()
 	})
 
 	/*
@@ -252,7 +255,7 @@ function readHeader(fileName, sheetName, opts) {
 	const endRow = opts.hasMapping ? startRow + 2 : startRow;	
 	opts.range = { s: {c: 0, r: startRow}, e: {c: 100, r: endRow}}
 
-	const workbook = xlsx.readFile(fileName)	
+	const workbook = xlsx.readFile(fileName)
 
 	//extract header from the first accepted sheet
 	const sheetNameLower = toLowerAndNoSpace(sheetName)
