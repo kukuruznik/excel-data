@@ -176,7 +176,7 @@ function readOneSheet(workbook, fileName, sheetName, opts) {
 
 	//add meta info to rows
 	data.forEach(row => {
-		row._sheet = sheetName.toLowerCase()
+		row._sheet = sheetName.toLowerCase().replace(/ /g, '')
 		row._file = fileName.toLowerCase()
 	})
 
