@@ -61,7 +61,7 @@ parameters
 			{columns: [col1, colo2, ...]}
 *
 **/
-export function read(fileNames, opts) {		
+export async function read(fileNames, opts) {		
 	let data = {}
 
 	opts = opts || {}
@@ -71,16 +71,10 @@ export function read(fileNames, opts) {
 
 	const files = fileNames instanceof Array ? fileNames : [fileNames]	
 
-	return new Promise((resolve, reject) => {	
-		let promises = files.map(file => readOneFile(file, opts))
+	let promises = files.map(file => readOneFile(file, opts))
 
-		Promise
-			.all(promises)
-			.then(results =>
-				resolve(
-					mergeSameData(results)))
-			.catch(err => reject(err))
-	})
+	const results = await Promise.all(promises)
+	return mergeSameData(results)
 }
 
 function mergeSameData(arr) {
@@ -96,34 +90,24 @@ function mergeSameData(arr) {
 	return result
 }
 
-function readOneFile(fileName, opts) {
+async function readOneFile(fileName, opts) {
 	if (!fileName)
 		return
 	
 	console.log(`loading file ${path.basename(fileName)}`)
 
-	return new Promise((resolve, reject) => {				
-		const workbook = xlsx.readFile(fileName)
+	const workbook = xlsx.readFile(fileName)
 
-		//read data for each accepted sheet
-		let promises = 
-				workbook.SheetNames
-					.filter(sheetName => 
-							!opts.acceptsSheet || 
-							opts.acceptsSheet(
-								toLowerAndNoSpace(sheetName)))
-					.map(sheetName => 
-							readOneSheet(workbook, fileName, sheetName, opts))
+	//read data for each accepted sheet
+	let promises = 
+			workbook.SheetNames
+				.filter(sheetName => !opts.acceptsSheet || opts.acceptsSheet(toLowerAndNoSpace(sheetName)))
+				.map(sheetName => readOneSheet(workbook, fileName, sheetName, opts))
 
-		Promise
-			.all(promises)
-			.then(results => {
-				console.log(`loaded file ${path.basename(fileName)}`)
-				resolve(					
-					mergeSameData(results))
-			})
-			.catch(err => reject(err))
-	})
+	const results = await Promise.all(promises)
+
+	console.log(`loaded file ${path.basename(fileName)}`)	
+	return mergeSameData(results)
 }
 
 function readOneSheet(workbook, fileName, sheetName, opts) {	
@@ -219,7 +203,7 @@ function readOneSheet(workbook, fileName, sheetName, opts) {
 	}
 
 	console.log(`loaded sheet ${sheetName}`)
-	return Promise.resolve(sheetData)
+	return sheetData
 }
 
 /**

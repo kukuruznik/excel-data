@@ -57,18 +57,18 @@ describe('Lookup', () => {
 		it('for enums basing  on multiple columns', () => {
 			const enumItem = lookup.lookupValue(
 				{
-					key: '16 00 00',
-					offset: '0',
+					key: '07:Pending///13 B0:Current///13 80:History///01 0A:Permanent',
+					offset: '1',
 					dtcframe: '1',
 					dtcformat: '1'
 				}, 
 				'readdtccommandlist')
 			
-			expect(enumItem.key).to.equal('16 00 00')
-			expect(enumItem.offset).to.equal('0')
+			expect(enumItem.key).to.equal('07:Pending///13 B0:Current///13 80:History///01 0A:Permanent')
+			expect(enumItem.offset).to.equal('1')
 			expect(enumItem.dtcframe).to.equal('1')
 			expect(enumItem.dtcformat).to.equal('1')
-			expect(enumItem.value).to.equal('8')
-		})
+			expect(enumItem.value).to.equal('88')
+		})	
 	})
 })	
