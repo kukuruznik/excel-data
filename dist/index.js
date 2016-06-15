@@ -3,15 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.Lookup = undefined;
-
-var _regenerator = require('babel-runtime/regenerator');
-
-var _regenerator2 = _interopRequireDefault(_regenerator);
-
-var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
-
-var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
+exports.read = exports.Lookup = undefined;
 
 var _toConsumableArray2 = require('babel-runtime/helpers/toConsumableArray');
 
@@ -21,70 +13,17 @@ var _getIterator2 = require('babel-runtime/core-js/get-iterator');
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
+var _regenerator = require('babel-runtime/regenerator');
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
 var _promise = require('babel-runtime/core-js/promise');
 
 var _promise2 = _interopRequireDefault(_promise);
 
-var abc = function () {
-	var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2() {
-		var _this = this;
+var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
-		return _regenerator2.default.wrap(function _callee2$(_context2) {
-			while (1) {
-				switch (_context2.prev = _context2.next) {
-					case 0:
-						_context2.next = 2;
-						return (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
-							return _regenerator2.default.wrap(function _callee$(_context) {
-								while (1) {
-									switch (_context.prev = _context.next) {
-										case 0:
-											return _context.abrupt('return', 10);
-
-										case 1:
-										case 'end':
-											return _context.stop();
-									}
-								}
-							}, _callee, _this);
-						}));
-
-					case 2:
-						return _context2.abrupt('return', _context2.sent);
-
-					case 3:
-					case 'end':
-						return _context2.stop();
-				}
-			}
-		}, _callee2, this);
-	}));
-	return function abc() {
-		return ref.apply(this, arguments);
-	};
-}();
-
-exports.read = read;
-
-var _path = require('path');
-
-var _path2 = _interopRequireDefault(_path);
-
-var _xlsx = require('xlsx');
-
-var _xlsx2 = _interopRequireDefault(_xlsx);
-
-var _strings = require('./utils/strings');
-
-var _array = require('./utils/array');
-
-var _lookup = require('./lookup');
-
-var _lookup2 = _interopRequireDefault(_lookup);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.Lookup = _lookup2.default;
+var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
 /**
 * return
@@ -144,28 +83,113 @@ parameters
 *
 **/
 
-function read(fileNames, opts) {
-	var data = {};
+var read = exports.read = function () {
+	var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(fileNames, opts) {
+		var data, files, promises, results;
+		return _regenerator2.default.wrap(function _callee$(_context) {
+			while (1) {
+				switch (_context.prev = _context.next) {
+					case 0:
+						data = {};
 
-	opts = opts || {};
-	if (opts.startRow && opts.endRow) {
-		opts.range = { s: { c: 0, r: opts.startRow }, e: { c: 100, r: opts.endRow } };
-	}
 
-	var files = fileNames instanceof Array ? fileNames : [fileNames];
+						opts = opts || {};
+						if (opts.startRow && opts.endRow) {
+							opts.range = { s: { c: 0, r: opts.startRow }, e: { c: 100, r: opts.endRow } };
+						}
 
-	return new _promise2.default(function (resolve, reject) {
-		var promises = files.map(function (file) {
-			return readOneFile(file, opts);
-		});
+						files = fileNames instanceof Array ? fileNames : [fileNames];
+						promises = files.map(function (file) {
+							return readOneFile(file, opts);
+						});
+						_context.next = 7;
+						return _promise2.default.all(promises);
 
-		_promise2.default.all(promises).then(function (results) {
-			return resolve(mergeSameData(results));
-		}).catch(function (err) {
-			return reject(err);
-		});
-	});
-}
+					case 7:
+						results = _context.sent;
+						return _context.abrupt('return', mergeSameData(results));
+
+					case 9:
+					case 'end':
+						return _context.stop();
+				}
+			}
+		}, _callee, this);
+	}));
+	return function read(_x, _x2) {
+		return ref.apply(this, arguments);
+	};
+}();
+
+var readOneFile = function () {
+	var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(fileName, opts) {
+		var workbook, promises, results;
+		return _regenerator2.default.wrap(function _callee2$(_context2) {
+			while (1) {
+				switch (_context2.prev = _context2.next) {
+					case 0:
+						if (fileName) {
+							_context2.next = 2;
+							break;
+						}
+
+						return _context2.abrupt('return');
+
+					case 2:
+
+						console.log('loading file ' + _path2.default.basename(fileName));
+
+						workbook = _xlsx2.default.readFile(fileName);
+
+						//read data for each accepted sheet
+
+						promises = workbook.SheetNames.filter(function (sheetName) {
+							return !opts.acceptsSheet || opts.acceptsSheet((0, _strings.toLowerAndNoSpace)(sheetName));
+						}).map(function (sheetName) {
+							return readOneSheet(workbook, fileName, sheetName, opts);
+						});
+						_context2.next = 7;
+						return _promise2.default.all(promises);
+
+					case 7:
+						results = _context2.sent;
+
+
+						console.log('loaded file ' + _path2.default.basename(fileName));
+						return _context2.abrupt('return', mergeSameData(results));
+
+					case 10:
+					case 'end':
+						return _context2.stop();
+				}
+			}
+		}, _callee2, this);
+	}));
+	return function readOneFile(_x3, _x4) {
+		return ref.apply(this, arguments);
+	};
+}();
+
+var _path = require('path');
+
+var _path2 = _interopRequireDefault(_path);
+
+var _xlsx = require('xlsx');
+
+var _xlsx2 = _interopRequireDefault(_xlsx);
+
+var _strings = require('./utils/strings');
+
+var _array = require('./utils/array');
+
+var _lookup = require('./lookup');
+
+var _lookup2 = _interopRequireDefault(_lookup);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.Lookup = _lookup2.default;
+
 
 function mergeSameData(arr) {
 	var result = {};
@@ -200,30 +224,6 @@ function mergeSameData(arr) {
 	}
 
 	return result;
-}
-
-function readOneFile(fileName, opts) {
-	if (!fileName) return;
-
-	console.log('loading file ' + _path2.default.basename(fileName));
-
-	return new _promise2.default(function (resolve, reject) {
-		var workbook = _xlsx2.default.readFile(fileName);
-
-		//read data for each accepted sheet
-		var promises = workbook.SheetNames.filter(function (sheetName) {
-			return !opts.acceptsSheet || opts.acceptsSheet((0, _strings.toLowerAndNoSpace)(sheetName));
-		}).map(function (sheetName) {
-			return readOneSheet(workbook, fileName, sheetName, opts);
-		});
-
-		_promise2.default.all(promises).then(function (results) {
-			console.log('loaded file ' + _path2.default.basename(fileName));
-			resolve(mergeSameData(results));
-		}).catch(function (err) {
-			return reject(err);
-		});
-	});
 }
 
 function readOneSheet(workbook, fileName, sheetName, opts) {
@@ -301,7 +301,7 @@ function readOneSheet(workbook, fileName, sheetName, opts) {
 	}
 
 	console.log('loaded sheet ' + sheetName);
-	return _promise2.default.resolve(sheetData);
+	return sheetData;
 }
 
 /**
